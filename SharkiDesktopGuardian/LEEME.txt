@@ -1,0 +1,13 @@
+SHARKI DESKTOP GUARDIAN
+========================
+
+1. Conserva todos los archivos de esta carpeta.
+2. Ejecuta SharkiDesktopGuardian.exe.
+3. Si Windows solicita permisos mediante UAC, puedes aceptarlos para obtener
+   sensores avanzados o cancelarlos y usar la aplicación con las métricas
+   disponibles.
+
+No necesita instalación, conexión a Internet ni tener .NET instalado.
+
+Ayuda, versiones y código fuente:
+https://github.com/SharkIT-sys/sharkIT-Desktop-Guardian

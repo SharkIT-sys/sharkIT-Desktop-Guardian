@@ -1,0 +1,37 @@
+name: Integración continua
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-test:
+    runs-on: windows-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Obtener el código
+        uses: actions/checkout@v7
+
+      - name: Configurar .NET 8
+        uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Restaurar dependencias
+        run: dotnet restore .\SharkiDesktopGuardian\tests\SharkiDesktopGuardian.Diagnostics\SharkiDesktopGuardian.Diagnostics.csproj
+
+      - name: Compilar aplicación
+        run: dotnet build .\SharkiDesktopGuardian\src\SharkiDesktopGuardian\SharkiDesktopGuardian.csproj -c Release --no-restore
+
+      - name: Compilar diagnóstico
+        run: dotnet build .\SharkiDesktopGuardian\tests\SharkiDesktopGuardian.Diagnostics\SharkiDesktopGuardian.Diagnostics.csproj -c Release --no-restore
+
+      - name: Ejecutar diagnóstico
+        run: dotnet .\SharkiDesktopGuardian\tests\SharkiDesktopGuardian.Diagnostics\bin\Release\net8.0-windows\SharkiDesktopGuardian.Diagnostics.dll

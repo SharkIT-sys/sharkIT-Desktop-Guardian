@@ -1,0 +1,8 @@
+.dotnet/
+.nuget/
+**/bin/
+**/obj/
+publish/
+Data/
+*.user
+*.suo

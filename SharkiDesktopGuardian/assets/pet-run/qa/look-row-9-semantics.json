@@ -1,0 +1,18 @@
+{
+  "row": "look-row-9",
+  "registered_source": "qa/look-row-9-registered.png",
+  "verdict": "pass",
+  "registration_scale": 0.5469613259668509,
+  "edge_failures": 0,
+  "directions": [
+    { "direction": "000", "expected": "up", "verdict": "pass", "reason": "Ojos altos y barbilla elevada en pose frontal." },
+    { "direction": "022.5", "expected": "up-right", "verdict": "pass", "reason": "Cabeza inicia giro a derecha manteniendo elevación." },
+    { "direction": "045", "expected": "up-right", "verdict": "pass", "reason": "Perfil parcial derecho y mirada aún elevada." },
+    { "direction": "067.5", "expected": "up-right", "verdict": "pass", "reason": "Giro derecho más marcado y descenso gradual." },
+    { "direction": "090", "expected": "right", "verdict": "pass", "reason": "Perfil derecho inequívoco en coordenadas de pantalla." },
+    { "direction": "112.5", "expected": "down-right", "verdict": "pass", "reason": "Perfil derecho con cabeza comenzando a bajar." },
+    { "direction": "135", "expected": "down-right", "verdict": "pass", "reason": "Visera superior domina y mirada baja a la derecha." },
+    { "direction": "157.5", "expected": "down-right", "verdict": "pass", "reason": "Cabeza muy recogida, aún con componente derecha legible." }
+  ],
+  "continuity": "Pies y pelvis anclados; capucha, visor y hombros avanzan gradualmente sin inversión ni salto visible."
+}

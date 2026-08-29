@@ -1,0 +1,74 @@
+name: Publicar versión portátil
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: windows-latest
+    timeout-minutes: 25
+
+    steps:
+      - name: Obtener el código
+        uses: actions/checkout@v7
+
+      - name: Configurar .NET 8
+        uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Restaurar y validar
+        shell: pwsh
+        run: |
+          dotnet restore .\SharkiDesktopGuardian\tests\SharkiDesktopGuardian.Diagnostics\SharkiDesktopGuardian.Diagnostics.csproj
+          dotnet build .\SharkiDesktopGuardian\tests\SharkiDesktopGuardian.Diagnostics\SharkiDesktopGuardian.Diagnostics.csproj -c Release --no-restore
+          dotnet .\SharkiDesktopGuardian\tests\SharkiDesktopGuardian.Diagnostics\bin\Release\net8.0-windows\SharkiDesktopGuardian.Diagnostics.dll
+
+      - name: Crear paquete portátil
+        shell: pwsh
+        run: |
+          $publish = Join-Path $env:RUNNER_TEMP "sharki-publish"
+          $package = Join-Path $env:GITHUB_WORKSPACE "Sharki-Desktop-Guardian-win-x64.zip"
+          dotnet restore .\SharkiDesktopGuardian\src\SharkiDesktopGuardian\SharkiDesktopGuardian.csproj -r win-x64
+          dotnet publish .\SharkiDesktopGuardian\src\SharkiDesktopGuardian\SharkiDesktopGuardian.csproj -c Release -r win-x64 --self-contained true --no-restore -o $publish
+          Compress-Archive -Path (Join-Path $publish "*") -DestinationPath $package -CompressionLevel Optimal
+          $hash = (Get-FileHash -Algorithm SHA256 -LiteralPath $package).Hash.ToLowerInvariant()
+          "$hash  Sharki-Desktop-Guardian-win-x64.zip" | Set-Content -Encoding ascii .\Sharki-Desktop-Guardian-win-x64.sha256
+
+      - name: Conservar paquete como artefacto
+        uses: actions/upload-artifact@v7
+        with:
+          name: Sharki-Desktop-Guardian-win-x64
+          path: |
+            Sharki-Desktop-Guardian-win-x64.zip
+            Sharki-Desktop-Guardian-win-x64.sha256
+          if-no-files-found: error
+
+      - name: Crear GitHub Release
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $tag = "${{ github.ref_name }}"
+          $repo = "${{ github.repository }}"
+          $assets = @(
+            ".\Sharki-Desktop-Guardian-win-x64.zip",
+            ".\Sharki-Desktop-Guardian-win-x64.sha256"
+          )
+
+          if (gh release view $tag --repo $repo 2>$null) {
+            gh release upload $tag $assets --repo $repo --clobber
+            gh release edit $tag --repo $repo --title "Sharki Desktop Guardian $tag"
+          }
+          else {
+            gh release create $tag $assets `
+              --repo $repo `
+              --title "Sharki Desktop Guardian $tag" `
+              --generate-notes `
+              --verify-tag
+          }

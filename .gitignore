@@ -1,0 +1,13 @@
+# Temp files
+*.tmp.png
+
+# .NET / WPF
+.vs/
+[Bb]in/
+[Oo]bj/
+publish/
+Data/
+*.user
+*.suo
+.dotnet/
+.nuget/

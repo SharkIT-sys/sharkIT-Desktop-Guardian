@@ -1,0 +1,14 @@
+{
+  "visual_qa": "pass",
+  "reviewer": "independent-agent",
+  "summary": "Las nueve filas conservan identidad y estilo, y jumping muestra un salto vertical suave y claramente legible sin recorte ni salto de escala perceptible.",
+  "warnings": [],
+  "repairs": [
+    {
+      "row": "jumping",
+      "original_failure": "Sin desplazamiento vertical legible tras extracción por componentes.",
+      "resolution": "Fila regenerada y extracción stable-slots; secuencia vertical 78, 29, 5, 29, 78.",
+      "verified": true
+    }
+  ]
+}

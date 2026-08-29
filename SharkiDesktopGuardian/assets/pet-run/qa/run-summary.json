@@ -1,0 +1,86 @@
+{
+  "ok": true,
+  "date": "2026-08-16",
+  "scope": "SharkiDesktopGuardian (dentro de D:\\Proyectos\\MASCOTA SHARKI). No se modifico ningun archivo fuera de esta carpeta.",
+  "build": {
+    "appBuild": "dotnet build src/SharkiDesktopGuardian -c Release: correcto, 0 errores, 0 advertencias",
+    "diagnosticsBuild": "dotnet build tests/SharkiDesktopGuardian.Diagnostics -c Release: correcto, 0 errores, 0 advertencias",
+    "publish": "dotnet publish -c Release -r win-x64 --self-contained true -o publish: correcto"
+  },
+  "diagnostics": {
+    "ok": true,
+    "failures": [],
+    "nativeCpuAndRam": "disponibles",
+    "nvidiaGpu": "RTX 4070 Laptop GPU detectada via nvidia-smi.exe: 52C, carga variable",
+    "libreHardwareCpuTemperature": "no disponible sin elevacion (esperado, se reporta null, sin excepcion)",
+    "libreHardwareNvmeStorages": "vacio sin elevacion (esperado, se reporta [], sin excepcion)",
+    "wmiPhysicalDiskMap": "no encontrado sin elevacion (esperado, no genera alerta falsa)",
+    "voskModelLoad": "ok=true, carga correctamente el modelo local espanol",
+    "safeCommandCount": 64,
+    "arbitraryPowerShellCommand": "rechazado correctamente",
+    "elevationRequiresConfirmation": "true",
+    "thermalAlertRedEyes": "activado correctamente en simulacion",
+    "emptyDiskListNoFalseAlert": "confirmado, sin excepcion"
+  },
+  "visualQa": {
+    "atlas": "assets/pet-run/final/spritesheet-extended.png|webp, 8x11, spriteVersionNumber=2",
+    "validationExtended": "ok=true, 0 errores, 0 advertencias",
+    "contactSheetReview": "identidad consistente en las 11 filas (idle, running-right/left, waving, jumping, failed, waiting, running, review, look-000-157.5, look-180-337.5), sin artefactos graves",
+    "directionBlindValidation": "ok=true, 0 errores, 4 advertencias menores en ambiguedad fina del eje vertical en posiciones diagonales (225, 247.5, 292.5, 315); ningun eje horizontal ni direccion cardinal invertidos",
+    "directionSemantics": "assets/pet-run/qa/direction-semantics.json: 16/16 direcciones sin fail (12 pass, 4 warn documentados)",
+    "row270Fix": "confirmado: la direccion 270 apunta a la izquierda (screen-left), corrigiendo el fallo previo"
+  },
+  "petPackageV2": {
+    "path": "assets/pet-run/package/v2/",
+    "files": ["pet.json", "spritesheet.webp"],
+    "spriteVersionNumber": 2,
+    "hashMatchesSourceAtlas": true
+  },
+  "codeChangesThisSession": [
+    {
+      "file": "src/SharkiDesktopGuardian/MainWindow.xaml",
+      "change": "Se nombraron los dos Path del overlay de ojos rojos (RedEyeLeft, RedEyeRight) para poder colorearlos desde codigo."
+    },
+    {
+      "file": "src/SharkiDesktopGuardian/MainWindow.xaml.cs",
+      "change": "Corregido bug real: AlertColor (color de alerta configurable) no tenia efecto visual, solo se leia su canal alfa (siempre 255). Ahora se aplica como Fill real de los ojos rojos. Se elimino la renarracion periodica de alertas sostenidas (solo se anuncia en el cambio de estado, no cada 5 minutos) y el campo _lastSpokenAlert, que quedo sin uso."
+    },
+    {
+      "file": "src/SharkiDesktopGuardian/Models/AppSettings.cs",
+      "change": "Cambiados los valores por defecto a peticion del usuario: PetScale 1.0 -> 0.6 (mascota mas pequena) y AutomaticMovement true -> false (se queda fija en su posicion, por defecto la esquina inferior derecha, en vez de caminar). Ambos siguen siendo ajustables desde la ventana de Ajustes."
+    }
+  ],
+  "realExecutionVerification": {
+    "method": "Lanzamiento real de publish/SharkiDesktopGuardian.exe con capturas de pantalla del escritorio real (no simulacion)",
+    "transparentTopmostWindow": "confirmado visualmente: la mascota se renderiza sin bordes, con fondo transparente, sobre otras ventanas",
+    "automaticMovementBeforeFix": "confirmado: la posicion de ventana cambiaba entre capturas (comportamiento por defecto anterior)",
+    "buttonInteraction": "confirmado: clic real en el boton de microfono disparo el estado de escucha real (\"Escuchando una orden segura...\") y la carga temporal del modelo Vosk",
+    "settingsPersistence": "confirmado: Data/settings.json se crea junto al ejecutable con los campos correctos y refleja la posicion de ventana en tiempo real",
+    "closeConfirmation": "verificado por codigo: MainWindow_Closing cancela cualquier cierre (incluido Alt+F4) y lo redirige a la confirmacion explicita (MessageBox Si/No, por defecto No) del comando ExitApplication",
+    "elevationConfirmation": "verificado por codigo y por diagnostico automatizado: RequestAdvancedSensors exige la misma confirmacion explicita antes de reiniciar elevado",
+    "limitation": "La automatizacion de clics adicionales (doble clic para abrir el panel, menu contextual) se interrumpio porque el sistema de coordenadas fisico/DPI no coincidia de forma fiable con una ventana en movimiento continuo, y una de las pruebas interfirio brevemente con una aplicacion del usuario en primer plano. Por precaucion se detuvo toda automatizacion adicional de raton/teclado; el resto de esos flujos (abrir panel, ajustes, pausar/reanudar) se verifico por lectura de codigo, no por clic en vivo."
+  },
+  "resourceUsage": {
+    "publishSizeTotal": "272 MB (incluye runtime .NET 8 autocontenido + modelo de voz Vosk)",
+    "voskModelSize": "58 MB (assets/pet-run del modelo dentro de publish/Models)",
+    "idleMemoryWorkingSet": "aprox. 235-300 MB segun momento de la sesion de prueba",
+    "idleCpuPercent": "aprox. 6% medido durante una ventana de 10 segundos en reposo (sondeo cada 2s + temporizadores de animacion)",
+    "voskListeningMemoryPeak": "incremento temporal de aprox. +8 a +12 MB durante la ventana de escucha de 8 segundos, coherente con carga bajo demanda del modelo",
+    "note": "Medido en un unico ciclo de prueba, no en una sesion prolongada; no se descarta una fuga lenta no detectada en este alcance."
+  },
+  "securityAudit": {
+    "httpClients": "ninguno encontrado",
+    "sockets": "ninguno encontrado",
+    "telemetry": "ninguna encontrada",
+    "processStartUsages": [
+      "MainWindow.xaml.cs RestartElevated(): solo relanza el propio ejecutable (Environment.ProcessPath) con verbo runas, detras de confirmacion explicita",
+      "NvidiaSmiProvider.cs: solo ejecuta nvidia-smi.exe con una consulta fija, sin entrada de usuario"
+    ],
+    "safeCommandRouter": "lista blanca cerrada de 13 comandos por diccionario exacto; sin ejecucion dinamica ni ruta a cmd.exe/PowerShell",
+    "destructiveOperations": "ninguna encontrada (persistencia de ajustes usa escritura atomica local, sin borrados destructivos)"
+  },
+  "settingsRealApplication": {
+    "verified": ["PetName", "PetScale", "MovementSpeed", "AutomaticMovement", "AnimationsEnabled", "WindowLeft/Top (posicion)", "CpuTemperatureWarning", "GpuTemperatureWarning", "CpuLoadWarning", "GpuLoadWarning", "MemoryWarning", "DiskFreeWarning", "AlertHysteresis", "VoiceEnabled", "SpeechEnabled", "PollingSeconds", "PreferredDiskModels", "AlertColor (corregido en esta sesion)"],
+    "knownLimitation": ["AccentColor se guarda y se puede editar pero no tiene efecto visual actual; documentado en README como limitacion conocida, no en el alcance solicitado de esta ronda"]
+  }
+}

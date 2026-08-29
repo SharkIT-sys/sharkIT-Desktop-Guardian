@@ -1,0 +1,55 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AssemblyName>SharkiDesktopGuardian</AssemblyName>
+    <RootNamespace>SharkiDesktopGuardian</RootNamespace>
+    <Version>1.0.0</Version>
+    <Authors>SharkIT</Authors>
+    <Company>SharkIT</Company>
+    <Product>Sharki Desktop Guardian</Product>
+    <Description>Mascota y monitor local de hardware para Windows 11.</Description>
+    <RepositoryUrl>https://github.com/SharkIT-sys/sharkIT-Desktop-Guardian</RepositoryUrl>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationIcon>Assets\sharki.ico</ApplicationIcon>
+    <PublishSingleFile>false</PublishSingleFile>
+    <PublishReadyToRun>false</PublishReadyToRun>
+    <SatelliteResourceLanguages>es;en</SatelliteResourceLanguages>
+    <DebugType>embedded</DebugType>
+    <InvariantGlobalization>false</InvariantGlobalization>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- El icono de bandeja usa WinForms de forma aislada; evitamos contaminar el código WPF con sus usings globales. -->
+    <Using Remove="System.Drawing" />
+    <Using Remove="System.Windows.Forms" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="LibreHardwareMonitorLib" Version="0.9.6" />
+    <PackageReference Include="NAudio" Version="2.4.0" />
+    <PackageReference Include="System.Management" Version="10.0.11" />
+    <PackageReference Include="System.Speech" Version="10.0.11" />
+    <PackageReference Include="Vosk" Version="0.3.38" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Assets\sharki.ico" />
+    <Resource Include="Assets\spritesheet.png" Condition="Exists('Assets\spritesheet.png')" />
+    <Resource Include="Assets\reference.png" Condition="Exists('Assets\reference.png')" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="..\..\LEEME.txt" Link="LEEME.txt">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Models\vosk-model-small-es-0.42\**\*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+</Project>

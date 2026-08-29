@@ -1,0 +1,72 @@
+{
+  "id": "sharki-guardian",
+  "name": "Sharki",
+  "displayName": "Sharki Desktop Guardian",
+  "packageVersion": "2.1.0",
+  "spriteVersionNumber": 2,
+  "spritesheet": "spritesheet.webp",
+  "spritesheetLayout": {
+    "columns": 8,
+    "rows": 15,
+    "cellWidth": 192,
+    "cellHeight": 208,
+    "width": 1536,
+    "height": 3120,
+    "format": "WEBP",
+    "mode": "RGBA",
+    "lookDirectionCount": 16,
+    "neutralLookFrame": {
+      "rowIndex": 0,
+      "columnIndex": 6
+    }
+  },
+  "states": [
+    { "state": "idle", "rowIndex": 0, "frameCount": 6, "loop": true },
+    { "state": "running-right", "rowIndex": 1, "frameCount": 8, "loop": true },
+    { "state": "running-left", "rowIndex": 2, "frameCount": 8, "loop": true },
+    { "state": "waving", "rowIndex": 3, "frameCount": 4, "loop": true },
+    { "state": "jumping", "rowIndex": 4, "frameCount": 5, "loop": false },
+    { "state": "failed", "rowIndex": 5, "frameCount": 8, "loop": true },
+    { "state": "waiting", "rowIndex": 6, "frameCount": 6, "loop": true },
+    { "state": "running", "rowIndex": 7, "frameCount": 6, "loop": true },
+    { "state": "review", "rowIndex": 8, "frameCount": 6, "loop": true },
+    { "state": "carrying-box", "rowIndex": 11, "frameCount": 8, "loop": true, "petState": "HighLoad", "source": "gemini-nano-banana" },
+    { "state": "stuffing-box", "rowIndex": 12, "frameCount": 6, "loop": true, "petState": "LowDisk", "source": "gemini-nano-banana" },
+    { "state": "wiping-sweat", "rowIndex": 13, "frameCount": 6, "loop": true, "petState": "HighMemory", "source": "gemini-nano-banana" },
+    { "state": "on-fire", "rowIndex": 14, "frameCount": 5, "loop": true, "petState": "ThermalAlert", "source": "gemini-nano-banana" }
+  ],
+  "lookDirections": [
+    { "degrees": 0.0, "rowIndex": 9, "columnIndex": 0, "expected": "up" },
+    { "degrees": 22.5, "rowIndex": 9, "columnIndex": 1, "expected": "up-right" },
+    { "degrees": 45.0, "rowIndex": 9, "columnIndex": 2, "expected": "up-right" },
+    { "degrees": 67.5, "rowIndex": 9, "columnIndex": 3, "expected": "up-right" },
+    { "degrees": 90.0, "rowIndex": 9, "columnIndex": 4, "expected": "right" },
+    { "degrees": 112.5, "rowIndex": 9, "columnIndex": 5, "expected": "down-right" },
+    { "degrees": 135.0, "rowIndex": 9, "columnIndex": 6, "expected": "down-right" },
+    { "degrees": 157.5, "rowIndex": 9, "columnIndex": 7, "expected": "down-right" },
+    { "degrees": 180.0, "rowIndex": 10, "columnIndex": 0, "expected": "down" },
+    { "degrees": 202.5, "rowIndex": 10, "columnIndex": 1, "expected": "down-left" },
+    { "degrees": 225.0, "rowIndex": 10, "columnIndex": 2, "expected": "down-left" },
+    { "degrees": 247.5, "rowIndex": 10, "columnIndex": 3, "expected": "down-left" },
+    { "degrees": 270.0, "rowIndex": 10, "columnIndex": 4, "expected": "left" },
+    { "degrees": 292.5, "rowIndex": 10, "columnIndex": 5, "expected": "up-left" },
+    { "degrees": 315.0, "rowIndex": 10, "columnIndex": 6, "expected": "up-left" },
+    { "degrees": 337.5, "rowIndex": 10, "columnIndex": 7, "expected": "up-left" }
+  ],
+  "alertMapping": {
+    "thermalAlertRow": 14,
+    "lowDiskRow": 12,
+    "highMemoryRow": 13,
+    "highLoadRow": 11,
+    "redEyesStates": ["thermal-alert"]
+  },
+  "qa": {
+    "validation": "../../final/validation-extended.json",
+    "directionSemantics": "../../qa/direction-semantics.json",
+    "directionBlindValidation": "../../qa/direction-blind-validation.json",
+    "runSummary": "../../qa/run-summary.json"
+  },
+  "offline": true,
+  "network": "ninguna",
+  "notes": "Paquete local generado a partir del atlas final validado (spritesheet-extended.webp/png, 8x15, spriteVersionNumber=2). No requiere red ni descargas en tiempo de ejecucion. Filas 0-8 y 9-10 (miradas) generadas con Codex/imagegen; filas 11-14 (carrying-box, stuffing-box, wiping-sweat, on-fire) generadas con Gemini (nano-banana) a partir de los prompts en assets/pet-run/prompts/rows/, recortadas y normalizadas a celdas de 192x208 con un script Pillow local (assets/pet-run/decoded/_process_new_rows.py). La fila on-fire solo usa 5 fotogramas: de los 9 generados, 4 no mostraban llamas o quedaban mal encuadrados y se descartaron."
+}

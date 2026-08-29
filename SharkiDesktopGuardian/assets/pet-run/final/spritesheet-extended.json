@@ -1,0 +1,103 @@
+{
+  "spritesheetPath": "spritesheet-extended.png",
+  "spritesheetPathNote": "El PNG es la fuente de verdad y es el que embebe la app (src/SharkiDesktopGuardian/Assets/spritesheet.png). Los .webp de esta carpeta y de package/v2 conservan la fila 6 (escucha) anterior y están pendientes de regenerar desde este PNG; ningún código los consume.",
+  "spritesheetLayout": {
+    "columns": 8,
+    "rows": 15,
+    "cellWidth": 192,
+    "cellHeight": 208,
+    "lookDirectionCount": 16,
+    "neutralLookFrame": {
+      "rowIndex": 0,
+      "columnIndex": 6
+    }
+  },
+  "alertGestureRows": [
+    { "state": "carrying-box", "rowIndex": 11, "frameCount": 8, "petState": "HighLoad", "note": "Generado con Gemini (nano-banana) a partir de assets/pet-run/prompts/rows/carrying-box.md" },
+    { "state": "stuffing-box", "rowIndex": 12, "frameCount": 6, "petState": "LowDisk", "note": "Generado con Gemini (nano-banana) a partir de assets/pet-run/prompts/rows/stuffing-box.md" },
+    { "state": "wiping-sweat", "rowIndex": 13, "frameCount": 6, "petState": "HighMemory", "note": "Generado con Gemini (nano-banana) a partir de assets/pet-run/prompts/rows/wiping-sweat.md" },
+    { "state": "on-fire", "rowIndex": 14, "frameCount": 5, "petState": "ThermalAlert", "note": "Generado con Gemini (nano-banana) a partir de assets/pet-run/prompts/rows/on-fire.md; solo 5 de los 9 fotogramas fuente mostraban llamas consistentes" }
+  ],
+  "lookDirections": [
+    {
+      "degrees": 0.0,
+      "rowIndex": 9,
+      "columnIndex": 0
+    },
+    {
+      "degrees": 22.5,
+      "rowIndex": 9,
+      "columnIndex": 1
+    },
+    {
+      "degrees": 45.0,
+      "rowIndex": 9,
+      "columnIndex": 2
+    },
+    {
+      "degrees": 67.5,
+      "rowIndex": 9,
+      "columnIndex": 3
+    },
+    {
+      "degrees": 90.0,
+      "rowIndex": 9,
+      "columnIndex": 4
+    },
+    {
+      "degrees": 112.5,
+      "rowIndex": 9,
+      "columnIndex": 5
+    },
+    {
+      "degrees": 135.0,
+      "rowIndex": 9,
+      "columnIndex": 6
+    },
+    {
+      "degrees": 157.5,
+      "rowIndex": 9,
+      "columnIndex": 7
+    },
+    {
+      "degrees": 180.0,
+      "rowIndex": 10,
+      "columnIndex": 0
+    },
+    {
+      "degrees": 202.5,
+      "rowIndex": 10,
+      "columnIndex": 1
+    },
+    {
+      "degrees": 225.0,
+      "rowIndex": 10,
+      "columnIndex": 2
+    },
+    {
+      "degrees": 247.5,
+      "rowIndex": 10,
+      "columnIndex": 3
+    },
+    {
+      "degrees": 270.0,
+      "rowIndex": 10,
+      "columnIndex": 4
+    },
+    {
+      "degrees": 292.5,
+      "rowIndex": 10,
+      "columnIndex": 5
+    },
+    {
+      "degrees": 315.0,
+      "rowIndex": 10,
+      "columnIndex": 6
+    },
+    {
+      "degrees": 337.5,
+      "rowIndex": 10,
+      "columnIndex": 7
+    }
+  ]
+}
