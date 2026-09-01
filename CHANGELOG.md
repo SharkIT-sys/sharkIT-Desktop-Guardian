@@ -2,6 +2,15 @@
 
 Este proyecto sigue [Versionado Semántico](https://semver.org/lang/es/).
 
+## 1.1.1 - 2026-09-01
+
+### Legal
+
+- Adoptada la PolyForm Noncommercial License 1.0.0 a nombre de SharkIT-sys.
+- Aclarado que cualquier uso comercial requiere un acuerdo escrito independiente.
+- Incluidos la licencia y los avisos de terceros en el paquete portátil.
+- Actualizadas las versiones documentadas de las dependencias de terceros.
+
 ## 1.1.0 - 2026-09-01
 
 ### Añadido

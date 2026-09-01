@@ -136,3 +136,11 @@ El resultado correcto termina con `"ok": true` y `"failures": []`. La integraci�
 - Las versiones listas para usar están en [Releases](https://github.com/SharkIT-sys/sharkIT-Desktop-Guardian/releases).
 - Los cambios se documentan en [CHANGELOG.md](CHANGELOG.md).
 - Para informar de un fallo, abre un [issue](https://github.com/SharkIT-sys/sharkIT-Desktop-Guardian/issues) sin incluir información sensible.
+
+## Licencia
+
+Copyright 2026 SharkIT-sys.
+
+El proyecto permite usar, copiar, modificar y redistribuir el software únicamente para fines no comerciales bajo la [PolyForm Noncommercial License 1.0.0](LICENSE.md). Cualquier uso comercial requiere un [acuerdo escrito independiente](COMMERCIAL_USE.md) con SharkIT-sys.
+
+Los componentes de terceros conservan sus propias licencias, detalladas en [THIRD_PARTY_NOTICES.md](SharkiDesktopGuardian/THIRD_PARTY_NOTICES.md).

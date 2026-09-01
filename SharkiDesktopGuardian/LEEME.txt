@@ -11,3 +11,12 @@ No necesita instalación, conexión a Internet ni tener .NET instalado.
 
 Ayuda, versiones y código fuente:
 https://github.com/SharkIT-sys/sharkIT-Desktop-Guardian
+
+LICENCIA
+========
+
+Copyright 2026 SharkIT-sys.
+
+Se permite el uso, copia, modificación y redistribución únicamente para fines
+no comerciales conforme a LICENSE.md. Cualquier uso comercial necesita un
+acuerdo escrito independiente con SharkIT-sys; consulta COMMERCIAL_USE.md.
