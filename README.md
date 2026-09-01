@@ -9,6 +9,10 @@ Mascota de escritorio para Windows 11 que muestra el estado local de CPU, GPU NV
 
 **[Descargar la última versión para Windows x64](https://github.com/SharkIT-sys/sharkIT-Desktop-Guardian/releases/latest/download/Sharki-Desktop-Guardian-win-x64.zip)**
 
+[Comprobar el SHA-256 de la última versión](https://github.com/SharkIT-sys/sharkIT-Desktop-Guardian/releases/latest/download/Sharki-Desktop-Guardian-win-x64.sha256)
+
+Ambos enlaces usan `releases/latest`: GitHub los redirige automáticamente a los archivos de la release estable marcada como **Latest**, sin necesidad de cambiar el README en cada versión.
+
 1. Descarga el archivo ZIP y elige **Extraer todo**.
 2. Abre la carpeta extraída.
 3. Haz doble clic en `SharkiDesktopGuardian.exe`.
@@ -44,6 +48,38 @@ No requiere instalación, cuenta, conexión a Internet ni tener .NET instalado. 
 - **Icono de la bandeja**: abre, oculta o cierra la aplicación.
 
 Por defecto, Sharki solicita elevación mediante el cuadro UAC para intentar leer temperaturas de CPU y discos. Si cancelas el aviso, continúa funcionando con las métricas disponibles. Este comportamiento se puede desactivar en **Ajustes → Sensores avanzados**.
+
+### Cuando aparece «No disponible» o «—»
+
+Sharki solo muestra valores que Windows, el controlador o el propio hardware exponen de forma fiable. Si un sensor no está accesible, aparece como **No disponible** o `—` y no se inventa un valor ni se genera una alerta falsa.
+
+Los porcentajes y temperaturas configurables en **Ajustes** son únicamente umbrales para decidir cuándo mostrar un aviso. Cambiarlos no activa, calibra ni hace compatible un sensor.
+
+#### Activar los sensores avanzados
+
+1. Abre **Ajustes → Sensores avanzados**.
+2. Activa **Iniciar siempre con permisos de administrador**.
+3. Cierra Sharki por completo desde el icono de la bandeja.
+4. Vuelve a abrirla y acepta el aviso de Control de cuentas de usuario (UAC).
+
+La elevación mejora el acceso a determinados sensores, pero no garantiza que todos estén disponibles: también depende del equipo, el firmware, el controlador y de cómo el fabricante publique los datos.
+
+| Dato | Qué necesita | Qué hacer si no aparece |
+|---|---|---|
+| Uso de CPU y RAM | Funciones estándar de Windows; no deberían requerir permisos de administrador | Espera una actualización del panel y reinicia Sharki. Si continúa ausente, es un fallo que conviene comunicar con el diagnóstico de la aplicación. |
+| Temperatura de CPU | Permisos elevados y un sensor compatible que LibreHardwareMonitor pueda leer | Activa los sensores avanzados y reinicia aceptando UAC. Si sigue como **No disponible**, no existe un ajuste que pueda forzarlo: el sensor no está siendo expuesto de forma compatible. |
+| GPU NVIDIA: carga, temperatura y VRAM | Una GPU NVIDIA, el controlador oficial instalado y `nvidia-smi.exe` operativo | Actualiza o reinstala el controlador oficial de NVIDIA y comprueba `nvidia-smi` en una terminal. Las métricas de GPU Intel o AMD no están soportadas actualmente en esta sección. |
+| Espacio y modelo de los discos | Una unidad fija, montada, preparada y visible para Windows | Las unidades extraíbles, desconectadas o que Windows no marque como listas pueden no aparecer. El espacio usado y libre no depende del sensor de temperatura. |
+| Temperatura de discos / SMART | Permisos elevados y que la unidad y su controlador expongan telemetría compatible | Activa los sensores avanzados. Algunas unidades NVMe y, especialmente, discos conectados mediante USB, RAID o ciertos controladores pueden seguir sin ofrecer la temperatura. |
+| Velocidad de red | Una interfaz de red activa que no sea de bucle local ni túnel | La primera lectura aparece como `—` porque hacen falta dos muestras para calcular la velocidad. Espera al siguiente intervalo; si no hay tráfico o interfaz activa, puede permanecer sin dato. |
+
+Para comprobar la GPU NVIDIA desde PowerShell o Símbolo del sistema:
+
+```powershell
+nvidia-smi
+```
+
+Si el comando no existe o devuelve un error, Sharki tampoco podrá obtener esas métricas hasta que el controlador de NVIDIA funcione correctamente.
 
 ### Órdenes de voz
 
