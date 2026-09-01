@@ -11,8 +11,6 @@ Mascota de escritorio para Windows 11 que muestra el estado local de CPU, GPU NV
 
 [Comprobar el SHA-256 de la última versión](https://github.com/SharkIT-sys/sharkIT-Desktop-Guardian/releases/latest/download/Sharki-Desktop-Guardian-win-x64.sha256)
 
-Ambos enlaces usan `releases/latest`: GitHub los redirige automáticamente a los archivos de la release estable marcada como **Latest**, sin necesidad de cambiar el README en cada versión.
-
 1. Descarga el archivo ZIP y elige **Extraer todo**.
 2. Abre la carpeta extraída.
 3. Haz doble clic en `SharkiDesktopGuardian.exe`.
