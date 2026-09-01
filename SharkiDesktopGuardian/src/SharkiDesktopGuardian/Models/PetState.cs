@@ -6,6 +6,7 @@ public enum PetState
     MovingLeft,
     MovingRight,
     Greeting,
+    CommandNotRecognized,
     HighLoad,
     HighMemory,
     LowDisk,
@@ -19,14 +20,12 @@ public sealed record AlertStatus(
     string Title,
     string Message,
     bool IsCritical,
-    bool RedEyes,
     IReadOnlyList<string> Reasons)
 {
     public static AlertStatus Normal(string petName) => new(
         PetState.Idle,
         "Estado normal",
         $"{petName} vigila el equipo.",
-        false,
         false,
         []);
 }

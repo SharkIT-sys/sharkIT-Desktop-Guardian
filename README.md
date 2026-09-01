@@ -26,11 +26,12 @@ No requiere instalación, cuenta, conexión a Internet ni tener .NET instalado. 
 ## Funciones principales
 
 - Monitorización local de CPU, GPU NVIDIA, RAM, discos y velocidad de red.
-- Mascota animada con avisos visuales compactos y ojos rojos para alertas críticas.
+- Sharki y Mummy seleccionables, con reposo estático y un saludo único al pasar el cursor.
+- Avisos visuales compactos con animaciones específicas para cada tipo de alerta.
 - Panel de rendimiento redimensionable y movible, con posición persistente.
 - Icono en la bandeja del sistema para abrir, ocultar o cerrar Sharki.
 - Reconocimiento de voz local mediante una gramática cerrada y modelo Vosk incluido.
-- Síntesis de voz SAPI5 local, con botón rápido **Silenciar / Activar voz**.
+- Síntesis de voz SAPI5 local, estilo normal o robótico y botón rápido **Silenciar / Activar voz**.
 - Modo demostración y tutorial integrado.
 - Ajustes portátiles guardados en `Data/settings.json`, junto al ejecutable.
 

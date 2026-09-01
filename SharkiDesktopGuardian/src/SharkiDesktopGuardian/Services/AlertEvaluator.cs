@@ -51,7 +51,6 @@ public sealed class AlertEvaluator
                 "Temperatura elevada",
                 reasons.Count > 0 ? string.Join(" · ", reasons) : "Temperatura por encima del umbral.",
                 true,
-                true,
                 reasons);
         }
 
@@ -61,19 +60,19 @@ public sealed class AlertEvaluator
                 .Where(disk => disk.FreePercent <= settings.DiskFreeWarning)
                 .Select(disk => $"{disk.Name}: {disk.FreePercent:0.#}% libre")
                 .ToArray();
-            return new AlertStatus(PetState.LowDisk, "Poco espacio", string.Join(" · ", reasons), true, false, reasons);
+            return new AlertStatus(PetState.LowDisk, "Poco espacio", string.Join(" · ", reasons), true, reasons);
         }
 
         if (_highMemory)
         {
             var reason = $"RAM al {snapshot.MemoryPercent:0}%";
-            return new AlertStatus(PetState.HighMemory, "Memoria elevada", reason, false, false, [reason]);
+            return new AlertStatus(PetState.HighMemory, "Memoria elevada", reason, false, [reason]);
         }
 
         if (_highLoad)
         {
             var reason = $"CPU {snapshot.CpuLoadPercent:0}% · GPU {snapshot.GpuLoadPercent:0}%";
-            return new AlertStatus(PetState.HighLoad, "Carga elevada", reason, false, false, [reason]);
+            return new AlertStatus(PetState.HighLoad, "Carga elevada", reason, false, [reason]);
         }
 
         return AlertStatus.Normal(settings.PetName);

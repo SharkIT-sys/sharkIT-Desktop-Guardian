@@ -25,6 +25,7 @@ public sealed class LocalVoiceService : IDisposable
 
     public event EventHandler<VoiceRecognition>? Recognized;
     public event EventHandler<string>? StatusChanged;
+    public event EventHandler<string>? NotRecognized;
 
     public LocalVoiceService()
     {
@@ -110,7 +111,7 @@ public sealed class LocalVoiceService : IDisposable
         return true;
     }
 
-    public void Speak(string text, bool enabled)
+    public void Speak(string text, bool enabled, bool robotic)
     {
         if (!enabled || string.IsNullOrWhiteSpace(text) || _disposed || _synthesizer is null)
         {
@@ -118,7 +119,7 @@ public sealed class LocalVoiceService : IDisposable
         }
 
         var generation = Interlocked.Increment(ref _speechGeneration);
-        _ = SpeakRoboticAsync(text, generation);
+        _ = SpeakAsync(text, generation, robotic);
     }
 
     public void StopSpeaking()
@@ -129,7 +130,7 @@ public sealed class LocalVoiceService : IDisposable
         playback?.Dispose();
     }
 
-    private async Task SpeakRoboticAsync(string text, int generation)
+    private async Task SpeakAsync(string text, int generation, bool robotic)
     {
         try
         {
@@ -141,9 +142,11 @@ public sealed class LocalVoiceService : IDisposable
 
             var stream = new MemoryStream(wavBytes);
             var reader = new WaveFileReader(stream);
-            var robotic = new RobotVoiceSampleProvider(reader.ToSampleProvider());
+            ISampleProvider output = robotic
+                ? new RobotVoiceSampleProvider(reader.ToSampleProvider())
+                : reader.ToSampleProvider();
             var player = new WaveOutEvent();
-            player.Init(robotic);
+            player.Init(output);
             player.PlaybackStopped += (_, _) =>
             {
                 player.Dispose();
@@ -322,6 +325,7 @@ public sealed class LocalVoiceService : IDisposable
             if (string.IsNullOrWhiteSpace(text))
             {
                 StatusChanged?.Invoke(this, "No se detectó una orden incluida en la lista segura.");
+            NotRecognized?.Invoke(this, string.Empty);
             }
             else
             {
@@ -347,6 +351,7 @@ public sealed class LocalVoiceService : IDisposable
         }
         else
         {
+            NotRecognized?.Invoke(this, eventArgs.Result.Text);
             StatusChanged?.Invoke(this, $"No he entendido con suficiente seguridad (creí oír «{eventArgs.Result.Text}»).");
         }
     }
@@ -354,6 +359,7 @@ public sealed class LocalVoiceService : IDisposable
     private void OnRecognizeCompleted(object? sender, RecognizeCompletedEventArgs eventArgs)
     {
         IsListening = false;
+        if (eventArgs.Result is null) NotRecognized?.Invoke(this, string.Empty);
         StatusChanged?.Invoke(this, eventArgs.Result is null
             ? "No se detectó una orden válida."
             : "Voz local preparada.");

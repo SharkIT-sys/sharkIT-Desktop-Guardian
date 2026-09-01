@@ -6,8 +6,13 @@
 [Bb]in/
 [Oo]bj/
 publish/
+publish-*/
 Data/
 *.user
 *.suo
 .dotnet/
 .nuget/
+
+# Visual QA regenerable
+SharkiDesktopGuardian/assets/pet-run/qa/
+SharkiDesktopGuardian/assets/pets/*/qa/

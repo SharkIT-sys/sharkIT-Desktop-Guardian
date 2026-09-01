@@ -14,10 +14,12 @@ namespace SharkiDesktopGuardian;
 
 public partial class MainWindow : Window
 {
-    private static readonly (PetState State, bool RedEyes, string? Caption, string? AlertText, bool AlertCritical)[] DemoSteps =
+    private static readonly TimeSpan GreetingDuration = TimeSpan.FromMilliseconds(450);
+
+    private static readonly (PetState State, bool IsCritical, string? Caption, string? AlertText, bool AlertCritical)[] DemoSteps =
     [
         (PetState.Idle, false, "Modo demostración: las alertas compactas duran 5 segundos y reaparecen al pasar el cursor.", null, false),
-        (PetState.Greeting, false, "Un saludo: así reacciona Sharki cuando interactúas con él.", null, false),
+        (PetState.Greeting, false, "Un saludo: así reacciona la mascota cuando interactúas con ella.", null, false),
         (PetState.HighLoad, false, null, "CPU · 94%", false),
         (PetState.HighLoad, false, null, "CPU · 94%  ·  GPU · 96%  ·  RAM · 91%", false),
         (PetState.HighMemory, false, null, "RAM · 91%", false),
@@ -42,6 +44,10 @@ public partial class MainWindow : Window
     private PetState _lastAlertState = PetState.Idle;
     private bool _allowClose;
     private bool _demoActive;
+    private bool _showingUnrecognizedCommand;
+    private int _unrecognizedCommandGeneration;
+    private bool _showingGreeting;
+    private int _greetingGeneration;
     private bool _bubbleShowsAlert;
     private string? _demoAlertText;
     private bool _demoAlertCritical;
@@ -103,6 +109,7 @@ public partial class MainWindow : Window
         };
         _monitor.SnapshotAvailable += Monitor_SnapshotAvailable;
         _voice.Recognized += Voice_Recognized;
+        _voice.NotRecognized += Voice_NotRecognized;
         _voice.StatusChanged += Voice_StatusChanged;
         _clickWatcher.WindowClicked += ClickWatcher_WindowClicked;
         _listenHotkey.Pressed += () => StartListening();
@@ -169,13 +176,18 @@ public partial class MainWindow : Window
 
     private void ApplyPetState()
     {
-        RedEyeOverlay.Visibility = _alert.RedEyes ? Visibility.Visible : Visibility.Collapsed;
         PetAnimator.AnimationsEnabled = _settings.AnimationsEnabled;
 
         if (!_settings.MonitoringEnabled)
         {
             HideAlertBubbleIfVisible();
             PetAnimator.State = PetState.Paused;
+            return;
+        }
+
+        if (_showingUnrecognizedCommand)
+        {
+            PetAnimator.State = PetState.CommandNotRecognized;
             return;
         }
 
@@ -191,10 +203,16 @@ public partial class MainWindow : Window
             if (_alert.State != _lastAlertState)
             {
                 ShowActiveAlertBubble();
-                _voice.Speak(_alert.Message, _settings.SpeechEnabled);
+                _voice.Speak(_alert.Message, _settings.SpeechEnabled, _settings.RoboticVoiceEnabled);
             }
 
             _lastAlertState = _alert.State;
+            return;
+        }
+
+        if (_showingGreeting)
+        {
+            PetAnimator.State = PetState.Greeting;
             return;
         }
 
@@ -214,8 +232,44 @@ public partial class MainWindow : Window
         if (_settings.MonitoringEnabled && _alert.State != PetState.Idle)
         {
             ShowActiveAlertBubble();
+            return;
         }
+
+        if (!_settings.MonitoringEnabled || _voice.IsListening || _showingUnrecognizedCommand)
+        {
+            return;
+        }
+
+        _ = ShowGreetingAsync();
     }
+
+    private async Task ShowGreetingAsync()
+    {
+        if (_showingGreeting)
+        {
+            return;
+        }
+
+        var generation = Interlocked.Increment(ref _greetingGeneration);
+        _showingGreeting = true;
+        PetAnimator.AnimationsEnabled = _settings.AnimationsEnabled;
+        PetAnimator.State = PetState.Greeting;
+
+        // Cuatro fotogramas a 125 ms: levanta la mano y vuelve al reposo sin repetir el gesto.
+        await Task.Delay(GreetingDuration);
+        if (generation != Volatile.Read(ref _greetingGeneration))
+        {
+            return;
+        }
+
+        _showingGreeting = false;
+        ApplyPetState();
+    }
+
+    private void Voice_NotRecognized(object? sender, string recognizedText) => Dispatcher.BeginInvoke(async () =>
+    {
+        await ShowUnrecognizedVoiceCommandAsync(recognizedText);
+    });
 
     private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs eventArgs)
     {
@@ -292,13 +346,38 @@ public partial class MainWindow : Window
         {
             if (_commandRouter.TryRoute(recognition.Text, out var command))
             {
+                Interlocked.Increment(ref _unrecognizedCommandGeneration);
+                _showingUnrecognizedCommand = false;
                 await ExecuteCommandAsync(command);
             }
             else
             {
-                ShowBubble($"Escuché: «{recognition.Text}», pero no pertenece a la lista segura. Di: Sharki, qué puedes hacer.", false);
+                await ShowUnrecognizedVoiceCommandAsync(recognition.Text);
             }
         });
+    }
+
+    private async Task ShowUnrecognizedVoiceCommandAsync(string? recognizedText)
+    {
+        var message = string.IsNullOrWhiteSpace(recognizedText)
+            ? "No he entendido una orden válida. Di: Sharki, qué puedes hacer."
+            : $"Escuché: «{recognizedText}», pero no pertenece a la lista segura. Di: Sharki, qué puedes hacer.";
+        var generation = Interlocked.Increment(ref _unrecognizedCommandGeneration);
+        _showingGreeting = false;
+        _showingUnrecognizedCommand = true;
+        PetAnimator.AnimationsEnabled = _settings.AnimationsEnabled;
+        PetAnimator.State = PetState.CommandNotRecognized;
+        ShowBubble(message, false);
+        _voice.Speak(message, _settings.SpeechEnabled, _settings.RoboticVoiceEnabled);
+
+        await Task.Delay(TimeSpan.FromSeconds(3));
+        if (generation != Volatile.Read(ref _unrecognizedCommandGeneration))
+        {
+            return;
+        }
+
+        _showingUnrecognizedCommand = false;
+        ApplyPetState();
     }
 
     private void Voice_StatusChanged(object? sender, string status) => Dispatcher.BeginInvoke(() =>
@@ -512,6 +591,7 @@ public partial class MainWindow : Window
     private void ShowSettings()
     {
         var window = new SettingsWindow(_settings) { Owner = _dashboard.IsVisible ? _dashboard : this };
+        window.PetScalePreviewChanged += (_, scale) => ApplyPetScalePreview(scale);
         if (window.ShowDialog() == true)
         {
             _settings = window.Result;
@@ -519,6 +599,10 @@ public partial class MainWindow : Window
             ApplySettings();
             _ = SaveSettingsAsync();
             ShowBubble("Ajustes guardados localmente.", false);
+        }
+        else
+        {
+            ApplyPetScalePreview(window.OriginalPetScale);
         }
     }
 
@@ -582,7 +666,6 @@ public partial class MainWindow : Window
         var step = DemoSteps[_demoIndex];
         PetAnimator.AnimationsEnabled = _settings.AnimationsEnabled;
         PetAnimator.State = step.State;
-        RedEyeOverlay.Visibility = step.RedEyes ? Visibility.Visible : Visibility.Collapsed;
         _demoAlertText = step.AlertText;
         _demoAlertCritical = step.AlertCritical;
         if (!string.IsNullOrWhiteSpace(step.AlertText))
@@ -591,33 +674,26 @@ public partial class MainWindow : Window
         }
         else
         {
-            ShowBubble(step.Caption ?? string.Empty, step.RedEyes);
+            ShowBubble(step.Caption ?? string.Empty, step.IsCritical);
         }
     }
 
     private void ApplySettings()
     {
         Title = _settings.PetName;
-        PetScaleTransform.ScaleX = _settings.PetScale;
-        PetScaleTransform.ScaleY = _settings.PetScale;
+        ApplyPetScalePreview(_settings.PetScale);
+        PetAnimator.PetId = _settings.PetId;
         PetAnimator.AnimationsEnabled = _settings.AnimationsEnabled;
         _voice.SetVoiceName(_settings.VoiceName);
         _dashboard.SetSpeechEnabled(_settings.SpeechEnabled);
         _trayIcon.UpdateName(_settings.PetName);
-        try
-        {
-            var alertColor = (Color)ColorConverter.ConvertFromString(_settings.AlertColor);
-            var brush = new SolidColorBrush(alertColor);
-            brush.Freeze();
-            RedEyeLeft.Fill = brush;
-            RedEyeRight.Fill = brush;
-        }
-        catch (FormatException)
-        {
-            // Ajuste inválido: se conserva el color rojo por defecto definido en XAML.
-        }
-
         ApplyPetState();
+    }
+
+    private void ApplyPetScalePreview(double scale)
+    {
+        PetScaleTransform.ScaleX = scale;
+        PetScaleTransform.ScaleY = scale;
     }
 
     private string BuildStatusSummary()
@@ -631,7 +707,7 @@ public partial class MainWindow : Window
     private void Respond(string message)
     {
         ShowBubble(message, false);
-        _voice.Speak(message, _settings.SpeechEnabled);
+        _voice.Speak(message, _settings.SpeechEnabled, _settings.RoboticVoiceEnabled);
     }
 
     private void RespondWithLaunchResult(bool launched, string successMessage) =>

@@ -2,6 +2,25 @@
 
 Este proyecto sigue [Versionado Semántico](https://semver.org/lang/es/).
 
+## Sin publicar
+
+### Añadido
+
+- Selección persistente entre Sharki y Mummy.
+- Voz normal o robótica y animación específica para órdenes no reconocidas.
+- Vista previa inmediata del tamaño de la mascota en Ajustes.
+
+### Corregido
+
+- Reposo estático para ambas mascotas.
+- Saludo de un único ciclo al pasar el cursor sobre la mascota.
+- Renderizado adaptable para atlas con distintas resoluciones.
+
+### Mantenimiento
+
+- Eliminados del repositorio los informes y fotogramas QA regenerables.
+- Excluidas las publicaciones locales y carpetas QA generadas.
+
 ## 1.0.0 - 2026-08-29
 
 Primera versión pública estable de Sharki Desktop Guardian.

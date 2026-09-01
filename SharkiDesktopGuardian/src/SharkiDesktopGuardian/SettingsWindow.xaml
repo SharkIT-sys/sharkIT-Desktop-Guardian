@@ -1,7 +1,7 @@
 <Window x:Class="SharkiDesktopGuardian.SettingsWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Ajustes de Sharki" Width="610" Height="720" MinHeight="600" Topmost="True"
+        Title="Ajustes de Sharki Desktop Guardian" Width="610" Height="720" MinHeight="600" Topmost="True"
         Background="#0C1118" WindowStartupLocation="CenterOwner" ResizeMode="CanResizeWithGrip">
     <Grid Margin="22">
         <Grid.RowDefinitions>
@@ -31,14 +31,19 @@
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
-                        <TextBlock Text="Nombre" VerticalAlignment="Center" />
-                        <TextBox Grid.Column="1" x:Name="PetNameBox" />
-                        <TextBlock Grid.Row="1" Text="Color principal (#RRGGBB)" VerticalAlignment="Center" Margin="0,8,0,0" />
-                        <TextBox Grid.Row="1" Grid.Column="1" x:Name="AccentColorBox" Margin="0,8,0,0" />
-                        <TextBlock Grid.Row="2" Text="Color de alerta (#RRGGBB)" VerticalAlignment="Center" Margin="0,8,0,0" />
-                        <TextBox Grid.Row="2" Grid.Column="1" x:Name="AlertColorBox" Margin="0,8,0,0" />
-                        <TextBlock Grid.Row="3" Text="Tamaño (0,55–2,25)" VerticalAlignment="Center" Margin="0,8,0,0" />
-                        <TextBox Grid.Row="3" Grid.Column="1" x:Name="PetScaleBox" Margin="0,8,0,0" />
+                        <TextBlock Text="Mascota" VerticalAlignment="Center" />
+                        <ComboBox Grid.Column="1" x:Name="PetChoiceBox" />
+                        <TextBlock Grid.Row="1" Text="Nombre" VerticalAlignment="Center" Margin="0,8,0,0" />
+                        <TextBox Grid.Row="1" Grid.Column="1" x:Name="PetNameBox" Margin="0,8,0,0" />
+                        <TextBlock Grid.Row="2" Text="Color principal (#RRGGBB)" VerticalAlignment="Center" Margin="0,8,0,0" />
+                        <TextBox Grid.Row="2" Grid.Column="1" x:Name="AccentColorBox" Margin="0,8,0,0" />
+                        <TextBlock Grid.Row="3" Text="Tamaño de la mascota" VerticalAlignment="Center" Margin="0,8,0,0" />
+                        <StackPanel Grid.Row="3" Grid.Column="1" Margin="0,8,0,0">
+                            <Slider x:Name="PetScaleSlider" Minimum="0.55" Maximum="2.25" TickFrequency="0.05"
+                                    SmallChange="0.05" LargeChange="0.15" IsSnapToTickEnabled="True"
+                                    ValueChanged="PetScaleSlider_ValueChanged" />
+                            <TextBlock x:Name="PetScaleValueText" Foreground="{StaticResource MutedBrush}" Margin="0,4,0,0" />
+                        </StackPanel>
                         <StackPanel Grid.Row="4" Grid.ColumnSpan="2" Margin="0,12,0,0">
                             <CheckBox x:Name="AnimationsCheck" Content="Animaciones" />
                         </StackPanel>
@@ -99,8 +104,19 @@
                             <TextBlock Text="Voz de síntesis" VerticalAlignment="Center" />
                             <ComboBox Grid.Column="1" x:Name="VoiceNameBox" />
                         </Grid>
+                        <Grid Margin="0,8,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="190" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="Estilo de respuesta" VerticalAlignment="Center" />
+                            <ComboBox Grid.Column="1" x:Name="VoiceStyleBox">
+                                <ComboBoxItem Tag="normal">Voz normal</ComboBoxItem>
+                                <ComboBoxItem Tag="robotic">Voz robótica</ComboBoxItem>
+                            </ComboBox>
+                        </Grid>
                         <TextBlock Margin="0,10,0,0" Foreground="{StaticResource MutedBrush}" TextWrapping="Wrap"
-                                   Text="La aplicación solo admite frases predefinidas; “Sharki” es opcional al usar el botón, o pulsa Ctrl+Alt+S. El modelo se carga solo durante la escucha. No guarda grabaciones ni envía audio. Las respuestas llevan siempre un timbre robótico añadido. Para más voces: Configuración de Windows → Hora e idioma → Voz, o instala un idioma adicional; solo se ven aquí las voces SAPI5 clásicas, no las voces «naturales» nuevas de Windows." />
+                                   Text="La aplicación solo admite frases predefinidas; “Sharki” es opcional al usar el botón, o pulsa Ctrl+Alt+S. El modelo se carga solo durante la escucha. No guarda grabaciones ni envía audio. Puedes elegir voz normal o un timbre robótico añadido. Para más voces: Configuración de Windows → Hora e idioma → Voz, o instala un idioma adicional; solo se ven aquí las voces SAPI5 clásicas, no las voces «naturales» nuevas de Windows." />
                     </StackPanel>
                 </GroupBox>
             </StackPanel>

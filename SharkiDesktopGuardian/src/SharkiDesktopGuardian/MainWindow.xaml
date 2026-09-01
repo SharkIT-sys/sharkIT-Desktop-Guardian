@@ -74,15 +74,9 @@
         </Border>
 
         <Grid Width="220" Height="238" VerticalAlignment="Bottom" HorizontalAlignment="Center"
+              Background="Transparent"
               MouseEnter="PetArea_MouseEnter">
             <controls:SpriteAnimator x:Name="PetAnimator" />
-
-            <Canvas x:Name="RedEyeOverlay" IsHitTestVisible="False" Visibility="Collapsed">
-                <Path x:Name="RedEyeLeft" Fill="#FFFF263F" Stroke="#FFFF6678" StrokeThickness="2"
-                      Data="M 70,75 L 101,79 L 96,88 L 70,84 Z" />
-                <Path x:Name="RedEyeRight" Fill="#FFFF263F" Stroke="#FFFF6678" StrokeThickness="2"
-                      Data="M 119,79 L 150,75 L 150,84 L 124,88 Z" />
-            </Canvas>
 
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,4">
                 <Button x:Name="MicrophoneButton" Style="{StaticResource PetButton}"

@@ -4,14 +4,15 @@ namespace SharkiDesktopGuardian.Models;
 
 public sealed class AppSettings
 {
+    public string PetId { get; set; } = PetCatalog.DefaultId;
     public string PetName { get; set; } = "Sharki";
     public string AccentColor { get; set; } = "#00C8FF";
-    public string AlertColor { get; set; } = "#FF5050";
     public double PetScale { get; set; } = 0.6;
     public bool AnimationsEnabled { get; set; } = true;
     public bool MonitoringEnabled { get; set; } = true;
     public bool VoiceEnabled { get; set; } = true;
     public bool SpeechEnabled { get; set; } = true;
+    public bool RoboticVoiceEnabled { get; set; } = true;
     public int PollingSeconds { get; set; } = 2;
     public double CpuTemperatureWarning { get; set; } = 90;
     public double GpuTemperatureWarning { get; set; } = 90;
@@ -34,6 +35,7 @@ public sealed class AppSettings
 
     public void Normalize()
     {
+        PetId = PetCatalog.NormalizeId(PetId);
         PetName = string.IsNullOrWhiteSpace(PetName) ? "Sharki" : PetName.Trim()[..Math.Min(PetName.Trim().Length, 30)];
         PetScale = Math.Clamp(PetScale, 0.55, 2.25);
         PollingSeconds = Math.Clamp(PollingSeconds, 1, 15);
@@ -45,19 +47,19 @@ public sealed class AppSettings
         DiskFreeWarning = Math.Clamp(DiskFreeWarning, 2, 40);
         AlertHysteresis = Math.Clamp(AlertHysteresis, 1, 10);
         AccentColor = NormalizeColor(AccentColor, "#00C8FF");
-        AlertColor = NormalizeColor(AlertColor, "#FF5050");
     }
 
     public AppSettings Clone() => new()
     {
+        PetId = PetId,
         PetName = PetName,
         AccentColor = AccentColor,
-        AlertColor = AlertColor,
         PetScale = PetScale,
         AnimationsEnabled = AnimationsEnabled,
         MonitoringEnabled = MonitoringEnabled,
         VoiceEnabled = VoiceEnabled,
         SpeechEnabled = SpeechEnabled,
+        RoboticVoiceEnabled = RoboticVoiceEnabled,
         PollingSeconds = PollingSeconds,
         CpuTemperatureWarning = CpuTemperatureWarning,
         GpuTemperatureWarning = GpuTemperatureWarning,

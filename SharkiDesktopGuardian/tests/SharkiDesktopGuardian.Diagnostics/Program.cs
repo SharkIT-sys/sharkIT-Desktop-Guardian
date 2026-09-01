@@ -16,6 +16,11 @@ if (router.TryRoute("Sharki ejecuta powershell", out _))
     failures.Add("Una orden arbitraria fue aceptada.");
 }
 
+if (!Enum.IsDefined(PetState.CommandNotRecognized))
+{
+    failures.Add("No existe el estado visual para una orden de voz no válida.");
+}
+
 if (!router.GetPolicy(SafeCommand.RequestAdvancedSensors).RequiresConfirmation)
 {
     failures.Add("La elevación no exige confirmación.");
@@ -26,10 +31,10 @@ Directory.CreateDirectory(settingsRoot);
 try
 {
     var settingsService = new SettingsService(settingsRoot);
-    var settings = new AppSettings { PetName = "Prueba", PollingSeconds = 1 };
+    var settings = new AppSettings { PetId = "mummy", PetName = "Prueba", PollingSeconds = 1, RoboticVoiceEnabled = false };
     await settingsService.SaveAsync(settings);
     var loaded = await settingsService.LoadAsync();
-    if (loaded.PetName != "Prueba" || loaded.PollingSeconds != 1)
+    if (loaded.PetId != "mummy" || loaded.PetName != "Prueba" || loaded.PollingSeconds != 1 || loaded.RoboticVoiceEnabled)
     {
         failures.Add("La persistencia portátil no conserva ajustes.");
     }
@@ -40,6 +45,14 @@ finally
     Directory.Delete(settingsRoot, true);
 }
 
+var invalidPetSettings = new AppSettings { PetId = "no-existe" };
+invalidPetSettings.Normalize();
+if (invalidPetSettings.PetId != PetCatalog.DefaultId || PetCatalog.All.Count != 2)
+{
+    failures.Add("El catálogo de mascotas no normaliza una selección desconocida.");
+}
+results["pets"] = PetCatalog.All.Select(pet => new { pet.Id, pet.DisplayName, pet.AtlasResourcePath });
+
 var alertSettings = new AppSettings();
 var evaluator = new AlertEvaluator();
 var thermalSnapshot = HardwareSnapshot.Empty with
@@ -49,9 +62,9 @@ var thermalSnapshot = HardwareSnapshot.Empty with
     GpuTemperatureC = 50
 };
 var thermal = evaluator.Evaluate(thermalSnapshot, alertSettings);
-if (thermal.State != PetState.ThermalAlert || !thermal.RedEyes)
+if (thermal.State != PetState.ThermalAlert)
 {
-    failures.Add("La alerta térmica no activa el estado crítico y los ojos rojos.");
+    failures.Add("La alerta térmica no activa el estado crítico.");
 }
 
 try
